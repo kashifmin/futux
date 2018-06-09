@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.futux.R
+import kotlinx.android.synthetic.main.main_fragment.*
 
 class MainFragment : Fragment() {
 
@@ -25,6 +27,10 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this.activity!!).get(MainViewModel::class.java)
         viewModel.init("kashifmin")
+
+        viewModel.user!!.observe(this, Observer {
+            message.text = it?.name
+        })
     }
 
 }
