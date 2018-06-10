@@ -2,8 +2,13 @@ package com.example.futux.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.futux.di.DaggerNetComponent
+import com.example.futux.di.DaggerRestComponent
+import com.example.futux.di.NetModule
+import com.example.futux.di.RestModule
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 abstract class UserRepository {
     abstract fun getUser(username: String): LiveData<User>
@@ -18,9 +23,16 @@ class TestUserRepository : UserRepository() {
     }
 }
 
-class ProdUserRepository : UserRepository() {
-    val webService: RestService = createRestService()
+class ProdUserRepository() : UserRepository() {
 
+    init {
+        val netComponent = DaggerNetComponent.builder().netModule(NetModule("https://api.github.com"))
+                .build()
+        val restComponent = DaggerRestComponent.builder().netComponent(netComponent).restModule(RestModule()).build()
+        restComponent.inject(this)
+    }
+
+    @Inject lateinit var webService: RestService
     override fun getUser(username: String): LiveData<User> {
         val data = MutableLiveData<User>()
         // TODO: cleanup subscription
