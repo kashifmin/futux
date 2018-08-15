@@ -23,7 +23,7 @@ class TestUserRepository : UserRepository() {
     }
 }
 
-class ProdUserRepository() : UserRepository() {
+class ProdUserRepository : UserRepository() {
 
     init {
         val netComponent = DaggerNetComponent.builder().netModule(NetModule("https://api.github.com"))
